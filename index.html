@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Serah Terima Bantuan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-200 flex justify-center min-h-screen font-sans">
+
+    <div class="bg-gray-50 w-full max-w-md shadow-lg relative min-h-screen flex flex-col overflow-x-hidden">
+        
+        <div id="halaman-login" class="p-6 flex flex-col h-full bg-white absolute inset-0 z-10 transition-opacity duration-300">
+            <div class="text-center mt-12 mb-8">
+                <div class="inline-block bg-blue-100 p-4 rounded-xl mb-4">
+                    <i class="fa-solid fa-box-open text-4xl text-blue-700"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-blue-800 leading-tight">Bukti Serah Terima<br>Bantuan</h1>
+                <p class="text-xs text-gray-500 mt-2">Verifikasi Penerimaan Bantuan</p>
+            </div>
+
+            <div class="space-y-5 flex-1">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="input-email" value="admin" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="input-password" value="1234" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                </div>
+                <button id="btn-login" onclick="prosesLogin()" class="w-full bg-blue-700 text-white font-bold py-3.5 rounded-lg mt-2 hover:bg-blue-800 transition shadow-md">
+                    <i class="fa-solid fa-lock mr-2"></i> Login
+                </button>
+            </div>
+        </div>
+
+        <div id="halaman-form" class="hidden flex-col h-full bg-gray-100 pb-20">
+            <div class="bg-blue-800 text-white p-4 flex items-center justify-between shadow-md">
+                <i class="fa-solid fa-arrow-left cursor-pointer" onclick="kembaliKeLogin()"></i>
+                <h2 class="font-semibold">Form Serah Terima Bantuan</h2>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <div class="flex gap-2">
+                    <div class="bg-white p-3 rounded-lg border border-gray-200 flex-1 flex items-center gap-2">
+                        <i class="fa-solid fa-wifi text-green-500"></i>
+                        <div>
+                            <p class="text-[10px] text-gray-500">Status Jaringan</p>
+                            <p id="status-jaringan" class="text-xs font-bold text-green-600">Online</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-gray-200 flex-1 flex items-center gap-2">
+                        <i class="fa-solid fa-rotate text-blue-500"></i>
+                        <div>
+                            <p class="text-[10px] text-gray-500">Sinkronisasi Data</p>
+                            <p class="text-xs font-bold text-blue-600">Siap</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-location-dot text-blue-800 mt-1 text-lg"></i>
+                        <div>
+                            <p class="text-xs font-bold text-gray-800">Lokasi (GPS)</p>
+                            <p id="teks-koordinat" class="text-xs text-gray-600 mt-1">Menunggu akses...</p>
+                            <p id="teks-akurasi" class="text-[10px] text-gray-500 mt-0.5">-</p>
+                        </div>
+                    </div>
+                    <button onclick="dapatkanLokasi()" class="bg-blue-50 text-blue-700 px-3 py-1 text-xs rounded border border-blue-200 hover:bg-blue-100">
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-xs font-bold text-gray-800 mb-3"><i class="fa-solid fa-camera mr-1"></i> Foto Bukti Serah Terima</p>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg h-40 flex items-center justify-center bg-gray-50 relative overflow-hidden">
+                        <img id="preview-foto" class="hidden object-cover w-full h-full absolute inset-0">
+                        <div id="placeholder-foto" class="text-center text-gray-400">
+                            <i class="fa-solid fa-image text-3xl mb-1"></i>
+                            <p class="text-xs">Belum ada foto</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <label class="flex-1 bg-blue-50 text-blue-700 text-center py-2 rounded border border-blue-200 text-xs font-semibold cursor-pointer">
+                            <i class="fa-solid fa-camera"></i> Ambil Foto
+                            <input type="file" accept="image/*" class="hidden" onchange="tampilkanPreview(event)">
+                        </label>
+                        <button onclick="hapusFoto()" class="flex-1 bg-red-50 text-red-600 text-center py-2 rounded border border-red-200 text-xs font-semibold">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-xs font-bold text-gray-800 mb-3"><i class="fa-solid fa-pen mr-1"></i> Tanda Tangan Penerima</p>
+                    <div class="border border-gray-300 rounded-lg bg-gray-50 overflow-hidden">
+                        <canvas id="canvas-ttd" class="w-full h-32 touch-none"></canvas>
+                    </div>
+                    <button onclick="bersihkanCanvas()" class="w-full mt-3 bg-gray-100 text-gray-600 py-2 rounded border border-gray-300 text-xs font-semibold hover:bg-gray-200">
+                        <i class="fa-solid fa-rotate-right"></i> Bersihkan
+                    </button>
+                </div>
+
+                <button onclick="simpanData()" class="w-full bg-blue-800 text-white font-bold py-3.5 rounded-lg shadow-md mt-4 hover:bg-blue-900">
+                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Simpan & Sinkronkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function prosesLogin() {
+            const email = document.getElementById('input-email').value;
+            const password = document.getElementById('input-password').value;
+            
+            if(email === "admin" && password === "1234") {
+                document.getElementById('halaman-login').classList.add('hidden');
+                document.getElementById('halaman-form').classList.remove('hidden');
+                document.getElementById('halaman-form').classList.add('flex');
+                
+                dapatkanLokasi();
+                
+                // Ini yang membuat tanda tangan langsung bisa dicoret
+                setTimeout(resizeCanvas, 100); 
+            } else {
+                alert("Email atau password salah!");
+            }
+        }
+
+        function kembaliKeLogin() {
+            document.getElementById('halaman-form').classList.add('hidden');
+            document.getElementById('halaman-form').classList.remove('flex');
+            document.getElementById('halaman-login').classList.remove('hidden');
+        }
+
+        function dapatkanLokasi() {
+            const teksKoordinat = document.getElementById('teks-koordinat');
+            const teksAkurasi = document.getElementById('teks-akurasi');
+            
+            teksKoordinat.innerHTML = "Mencari lokasi...";
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(6);
+                        const lng = position.coords.longitude.toFixed(6);
+                        const acc = position.coords.accuracy.toFixed(1);
+                        
+                        teksKoordinat.innerHTML = `${lat}, ${lng}`;
+                        if(acc < 10) {
+                            teksAkurasi.innerHTML = `<span class="text-green-600 font-bold">Akurasi: ${acc} m (Akurat)</span>`;
+                        } else {
+                            teksAkurasi.innerHTML = `Akurasi: ${acc} m`;
+                        }
+                    },
+                    (error) => {
+                        teksKoordinat.innerHTML = "GPS diblokir/gagal.";
+                    },
+                    { enableHighAccuracy: true }
+                );
+            }
+        }
+
+        function tampilkanPreview(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('preview-foto');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('placeholder-foto').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function hapusFoto() {
+            document.getElementById('preview-foto').src = "";
+            document.getElementById('preview-foto').classList.add('hidden');
+            document.getElementById('placeholder-foto').classList.remove('hidden');
+            document.querySelector('input[type="file"]').value = ""; // Reset input file
+        }
+
+        const canvas = document.getElementById('canvas-ttd');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = 128;
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startPosition(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getMousePos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getMousePos(e);
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+
+        function endPosition() {
+            isDrawing = false;
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mouseout', endPosition);
+
+        canvas.addEventListener('touchstart', startPosition, {passive: false});
+        canvas.addEventListener('touchmove', draw, {passive: false});
+        canvas.addEventListener('touchend', endPosition);
+
+        function bersihkanCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function simpanData() {
+            alert("Data serah terima berhasil disimulasikan untuk disimpan!");
+            kembaliKeLogin();
+        }
+    </script>
+</body>
+</html>
